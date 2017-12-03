@@ -24,11 +24,7 @@ impl Iterator for SpiralGenerator {
         self.previous_last = last;
         self.index += 1;
 
-        Some(Ring {
-            index,
-            first,
-            last,
-        })
+        Some(Ring { index, first, last })
     }
 }
 
@@ -63,9 +59,12 @@ impl Ring {
 fn find_ring(number: u32) -> Ring {
     assert!(number > 0);
 
-    let generator = SpiralGenerator::new();
+    let mut generator = SpiralGenerator::new();
 
-    generator.filter(|r| r.contains(number)).next().expect(&format!("Failed to find ring for number {}", number))
+    generator.find(|r| r.contains(number)).expect(&format!(
+        "Failed to find ring for number {}",
+        number
+    ))
 }
 
 pub fn part1(input: u32) -> u32 {
@@ -83,11 +82,7 @@ pub fn part1(input: u32) -> u32 {
 }
 
 fn diff(a: u32, b: u32) -> u32 {
-    if a > b {
-        a - b
-    } else {
-        b - a
-    }
+    if a > b { a - b } else { b - a }
 }
 
 #[cfg(test)]
