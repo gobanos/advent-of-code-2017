@@ -8,5 +8,5 @@ fn main() {
     let input = input.trim();
 
     println!("Part 1 : {}", day6::part1(input));
-    // println!("Part 2 : {}", day6::part2(input));
+    println!("Part 2 : {}", day6::part2(input));
 }
