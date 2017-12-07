@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Grégory OBANOS <gregory.obanos@gmail.com>"]
 
 [dependencies]
+nom = "*"
