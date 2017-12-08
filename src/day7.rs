@@ -1,8 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use day7_parser;
 
-use petgraph::Graph;
-
 #[derive(Debug, Eq, PartialEq)]
 struct Node<'a> {
     name: &'a str,
@@ -41,7 +39,7 @@ fn find_root<'a, 'b>(nodes: &'a HashMap<&'b str, Node<'b>>) -> &'b str {
     let mut names = nodes.keys().collect::<HashSet<_>>();
 
     for (_, node) in nodes.iter() {
-        for child in node.children.iter() {
+        for child in &node.children {
             names.remove(child);
         }
     }
