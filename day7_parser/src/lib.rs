@@ -24,14 +24,14 @@ named!(child_sep, complete!(tag!(" -> ")));
 named!(children<Vec<&str>>, separated_list_complete!(tag!(", "), name));
 
 named!(line<(&str, u32, Vec<&str>)>, do_parse!(
-        n: name         >>
-        opt!(space)     >>
-        w: weight       >>
-        opt!(child_sep) >>
-        c: children     >>
+    n: name         >>
+    opt!(space)     >>
+    w: weight       >>
+    opt!(child_sep) >>
+    c: children     >>
 
-        ((n, w, c))
-    ));
+    ((n, w, c))
+));
 
 pub fn parse<'a, T>(input: &'a str, mapper: fn(&'a str, u32, Vec<&'a str>) -> T) -> HashMap<&'a str, T> {
     input
