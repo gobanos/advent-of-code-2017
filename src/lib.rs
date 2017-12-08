@@ -1,5 +1,6 @@
-#[macro_use]
-extern crate nom;
+extern crate day7_parser;
+
+extern crate petgraph;
 
 pub mod day1;
 pub mod day2;
