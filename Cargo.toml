@@ -7,6 +7,7 @@ authors = ["Grégory OBANOS <gregory.obanos@gmail.com>"]
 # WORKSPACE DEPS
 day7_parser = { path = "day7_parser" }
 day8_parser = { path = "day8_parser" }
+day9_parser = { path = "day9_parser" }
 
 # EXTERNAL DEPS
 petgraph = "*"

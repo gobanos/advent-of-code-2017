@@ -1,5 +1,6 @@
 extern crate day7_parser;
 extern crate day8_parser;
+extern crate day9_parser;
 
 extern crate petgraph;
 
@@ -11,6 +12,7 @@ pub mod day5;
 pub mod day6;
 pub mod day7;
 pub mod day8;
+pub mod day9;
 
 #[macro_export]
 macro_rules! load_input {

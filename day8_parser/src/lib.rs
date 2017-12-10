@@ -38,15 +38,15 @@ named!(operator_tags, alt!(
 
 named!(line<(&str, Action, i32, &str, Operator, i32)>, do_parse!(
     reg: register       >>
-    space         >>
+    space               >>
     act: action         >>
-    space         >>
+    space               >>
     val: number         >>
     tag!(" if ")        >>
     oth_reg: register   >>
-    space         >>
+    space               >>
     cmp: operator       >>
-    space         >>
+    space               >>
     oth_val: number     >>
 
     (reg, act, val, oth_reg, cmp, oth_val)
