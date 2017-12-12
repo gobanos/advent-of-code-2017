@@ -91,7 +91,7 @@ mod tests {
     fn part1_sample1() {
         let mut grid = HexagonalGrid::new();
         for dir in &["ne", "ne", "ne"] {
-            grid.step(HexagonalDirection::from_str(dir));
+            grid.step(&HexagonalDirection::from_str(dir));
         }
         assert_eq!(grid.distance(), 3);
     }
@@ -101,7 +101,7 @@ mod tests {
     fn part1_sample2() {
         let mut grid = HexagonalGrid::new();
         for dir in &["ne", "ne", "sw", "sw"] {
-            grid.step(HexagonalDirection::from_str(dir));
+            grid.step(&HexagonalDirection::from_str(dir));
         }
         assert_eq!(grid.distance(), 0);
     }
@@ -111,7 +111,7 @@ mod tests {
     fn part1_sample3() {
         let mut grid = HexagonalGrid::new();
         for dir in &["ne", "ne", "s", "s"] {
-            grid.step(HexagonalDirection::from_str(dir));
+            grid.step(&HexagonalDirection::from_str(dir));
         }
         assert_eq!(grid.distance(), 2);
     }
@@ -121,7 +121,7 @@ mod tests {
     fn part1_sample4() {
         let mut grid = HexagonalGrid::new();
         for dir in &["se", "sw", "se", "sw", "sw"] {
-            grid.step(HexagonalDirection::from_str(dir));
+            grid.step(&HexagonalDirection::from_str(dir));
         }
         assert_eq!(grid.distance(), 3);
     }
