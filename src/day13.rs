@@ -33,6 +33,10 @@ impl Firewall {
         Firewall { layers }
     }
 
+    fn collide(&self, delay: u32) -> bool {
+        self.layers.iter().any(|l| l.collide(delay))
+    }
+
     fn cross(&self, delay: u32) -> Option<u32> {
         self.layers
             .iter()
@@ -52,11 +56,7 @@ pub fn part2(input: &str) -> u32 {
     let firewall = Firewall::new(input.lines().map(Layer::from_str).collect());
 
     (0..)
-        .filter_map(|i| if firewall.cross(i).is_none() {
-            Some(i)
-        } else {
-            None
-        })
+        .filter_map(|i| if firewall.collide(i) { Some(i) } else { None })
         .next()
         .unwrap()
 }
