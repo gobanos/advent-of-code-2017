@@ -56,7 +56,7 @@ pub fn part2(input: &str) -> u32 {
     let firewall = Firewall::new(input.lines().map(Layer::from_str).collect());
 
     (0..)
-        .filter_map(|i| if firewall.collide(i) { Some(i) } else { None })
+        .filter_map(|i| if !firewall.collide(i) { Some(i) } else { None })
         .next()
         .unwrap()
 }
