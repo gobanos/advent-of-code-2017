@@ -1,4 +1,5 @@
 use knot_hasher::KnotHasher;
+use rayon::prelude::*;
 
 #[derive(Debug, Eq, PartialEq)]
 struct Disk {
@@ -8,6 +9,7 @@ struct Disk {
 impl Disk {
     fn new(key: &str) -> Disk {
         let rows = (0..128)
+            .into_par_iter()
             .map(|i| format!("{}-{}", key, i))
             .map(|k| {
                 KnotHasher::dense_hash_from_key(&k)

@@ -13,5 +13,6 @@ day12_parser = { path = "day12_parser" }
 # EXTERNAL DEPS
 petgraph = "*"
 time = "*"
+rayon = "*"
 
 [workspace]

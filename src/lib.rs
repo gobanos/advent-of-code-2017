@@ -4,6 +4,7 @@ extern crate day9_parser;
 extern crate day12_parser;
 
 extern crate petgraph;
+extern crate rayon;
 
 pub mod day1;
 pub mod day2;
