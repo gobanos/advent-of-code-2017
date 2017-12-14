@@ -1,61 +1,4 @@
-#[derive(Debug, Eq, PartialEq)]
-struct KnotHasher {
-    list: Vec<u8>,
-    pos: usize,
-    skip: usize,
-}
-
-impl KnotHasher {
-    fn new(size: u32) -> KnotHasher {
-        KnotHasher {
-            list: (0..size).map(|n| n as u8).collect(),
-            pos: 0,
-            skip: 0,
-        }
-    }
-
-    fn hash(&mut self, length: u8) {
-        let length = length as usize;
-        let len = self.list.len();
-
-        let mut section = self.list
-            .iter()
-            .cloned()
-            .cycle()
-            .skip(self.pos)
-            .take(length)
-            .collect::<Vec<_>>();
-        section.reverse();
-
-        for i in 0..length {
-            self.list[(self.pos + i) % len] = section[i];
-        }
-
-        self.pos = (self.pos + length + self.skip) % len;
-
-        self.skip += 1;
-    }
-
-    fn dense_hash(&self) -> String {
-        let mut hash = Vec::with_capacity(16);
-
-        for i in 0..16 {
-            let mut xor = None;
-            for j in 0..16 {
-                let val = self.list[i * 16 + j];
-                xor = if let Some(xor) = xor.take() {
-                    Some(xor ^ val)
-                } else {
-                    Some(val)
-                }
-            }
-
-            hash.push(xor.expect("failed to compute XOR"));
-        }
-
-        hash.iter().map(|xor| format!("{:02x}", xor)).collect()
-    }
-}
+use knot_hasher::KnotHasher;
 
 pub fn part1(input: &str) -> u32 {
     let mut hasher = KnotHasher::new(256);
@@ -69,27 +12,16 @@ pub fn part1(input: &str) -> u32 {
 }
 
 pub fn part2(input: &str) -> String {
-    let mut input = input.chars().map(|c| c as u8).collect::<Vec<_>>();
-    input.push(17);
-    input.push(31);
-    input.push(73);
-    input.push(47);
-    input.push(23);
-
-    let mut hasher = KnotHasher::new(256);
-
-    for _ in 0..64 {
-        for &length in &input {
-            hasher.hash(length)
-        }
-    }
-
-    hasher.dense_hash()
+    KnotHasher::dense_hash_from_key(input)
+        .iter()
+        .map(|xor| format!("{:02x}", xor))
+        .collect()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use knot_hasher::KnotHasher;
 
     #[test]
     /// Suppose we instead only had a circular list containing five elements, 0, 1, 2, 3, 4,
