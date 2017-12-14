@@ -27,8 +27,8 @@ impl KnotHasher {
             .collect::<Vec<_>>();
         section.reverse();
 
-        for i in 0..length {
-            self.list[(self.pos + i) % len] = section[i];
+        for (i, &reversed) in section.iter().enumerate().take(length) {
+            self.list[(self.pos + i) % len] = reversed;
         }
 
         self.pos = (self.pos + length + self.skip) % len;
