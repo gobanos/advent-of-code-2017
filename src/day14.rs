@@ -35,6 +35,40 @@ impl Disk {
 
         Disk { rows }
     }
+
+    fn find_group(&self) -> Option<(usize, usize)> {
+        self.rows
+            .iter()
+            .enumerate()
+            .filter_map(|(r, row)| {
+                row.iter().enumerate().find(|&(_, &cell)| cell).map(
+                    |(c, _)| {
+                        (r, c)
+                    },
+                )
+            })
+            .next()
+    }
+
+    fn delete_group(&mut self, row: usize, column: usize) {
+        self.rows[row][column] = false;
+
+        if row > 0 && self.rows[row - 1][column] {
+            self.delete_group(row - 1, column);
+        }
+
+        if column > 0 && self.rows[row][column - 1] {
+            self.delete_group(row, column - 1);
+        }
+
+        if row < self.rows.len() - 1 && self.rows[row + 1][column] {
+            self.delete_group(row + 1, column);
+        }
+
+        if let Some(&true) = self.rows[row].get(column + 1) {
+            self.delete_group(row, column + 1);
+        }
+    }
 }
 
 pub fn part1(input: &str) -> u32 {
@@ -44,6 +78,19 @@ pub fn part1(input: &str) -> u32 {
         .iter()
         .map(|r| r.iter().map(|&b| if b { 1 } else { 0 }).sum::<u32>())
         .sum()
+}
+
+pub fn part2(input: &str) -> u32 {
+    let mut disk = Disk::new(input);
+    let mut nb_group = 0;
+
+    while let Some((r, c)) = disk.find_group() {
+        nb_group += 1;
+
+        disk.delete_group(r, c);
+    }
+
+    nb_group
 }
 
 #[cfg(test)]
@@ -67,6 +114,11 @@ mod tests {
     #[test]
     fn part1_sample() {
         assert_eq!(part1("flqrgnkx"), 8108);
+    }
+
+    #[test]
+    fn part2_sample() {
+        assert_eq!(part2("flqrgnkx"), 1242);
     }
 
     fn from_sample(sample: &str) -> Vec<bool> {
