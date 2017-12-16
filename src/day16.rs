@@ -140,6 +140,23 @@ impl FastDance {
     fn to_string(&self) -> String {
         self.dancers.iter().collect()
     }
+
+    fn get_cycle(&mut self) -> Vec<String> {
+        let mut cycle = vec![self.to_string()];
+
+        for _ in 0.. {
+            self.dance();
+            let positions = self.to_string();
+
+            if cycle.contains(&positions) {
+                break;
+            }
+
+            cycle.push(positions);
+        }
+
+        cycle
+    }
 }
 
 pub fn part1(input: &str) -> String {
@@ -157,11 +174,11 @@ pub fn part2(input: &str) -> String {
 
     let mut fast_dance = FastDance::new(16, &moves);
 
-    for _ in 0..1_000_000_000 {
-        fast_dance.dance();
-    }
+    let mut cycle = fast_dance.get_cycle();
 
-    fast_dance.to_string()
+    let index = 1_000_000_000 % cycle.len();
+
+    cycle.remove(index)
 }
 
 #[cfg(test)]
