@@ -12,13 +12,13 @@ impl Dance {
         assert!(nb_dancers <= 26);
 
         Dance {
-            dancers: ('a' as u8..).map(|c| c as char).take(nb_dancers).collect(),
+            dancers: (b'a'..).map(|c| c as char).take(nb_dancers).collect(),
             offset: 0,
         }
     }
 
-    fn make_move(&mut self, m: &Move) {
-        match *m {
+    fn make_move(&mut self, m: Move) {
+        match m {
             Move::Spin(offset) => self.spin(offset),
             Move::Exchange(a, b) => self.exchange(a, b),
             Move::Partner(a, b) => self.partner(a, b),
@@ -45,11 +45,14 @@ impl Dance {
     }
 
     fn to_string(&self) -> String {
-        self.dancers[self.offset..].iter().chain(self.dancers[..self.offset].iter()).collect()
+        self.dancers[self.offset..]
+            .iter()
+            .chain(self.dancers[..self.offset].iter())
+            .collect()
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Copy, Clone)]
 enum Move {
     Spin(usize),
     Exchange(usize, usize),
@@ -70,20 +73,20 @@ impl FromStr for Move {
                 let a = value.get(0).ok_or(ParseMoveError::ActionError)?;
                 let b = value.get(1).ok_or(ParseMoveError::ActionError)?;
 
-                Ok(Move::Exchange(
-                    a.parse()?,
-                    b.parse()?,
-                ))
-            },
+                Ok(Move::Exchange(a.parse()?, b.parse()?))
+            }
             "p" => {
-                let value = value.split('/').filter_map(|c| c.chars().next()).collect::<Vec<_>>();
+                let value = value
+                    .split('/')
+                    .filter_map(|c| c.chars().next())
+                    .collect::<Vec<_>>();
 
                 Ok(Move::Partner(
                     *value.get(0).ok_or(ParseMoveError::ActionError)?,
                     *value.get(1).ok_or(ParseMoveError::ActionError)?,
                 ))
-            },
-            _ => Err(ParseMoveError::ActionError)
+            }
+            _ => Err(ParseMoveError::ActionError),
         }
     }
 }
@@ -111,13 +114,31 @@ impl FastDance {
     fn new(nb_dancers: usize, moves: &[Move]) -> FastDance {
         let mut dance = Dance::new(nb_dancers);
 
-        for m in moves.iter().filter_map(|m| if let &Move::Partner(_, _) = m { None } else { Some(m) }) {
+        for m in moves.iter().filter_map(
+            |&m| if let Move::Partner(_, _) = m {
+                None
+            } else {
+                Some(m)
+            },
+        )
+        {
             dance.make_move(m);
         }
 
-        let mut permutations = ('a' as u8..).map(|c| c as char).map(|c| (c, c)).take(nb_dancers).collect::<HashMap<_, _>>();
+        let mut permutations = (b'a'..)
+            .map(|c| c as char)
+            .map(|c| (c, c))
+            .take(nb_dancers)
+            .collect::<HashMap<_, _>>();
 
-        for (a, b) in moves.iter().filter_map(|m| if let &Move::Partner(a, b) = m { Some((a, b)) } else { None }) {
+        for (a, b) in moves.iter().filter_map(
+            |&m| if let Move::Partner(a, b) = m {
+                Some((a, b))
+            } else {
+                None
+            },
+        )
+        {
             let b_from = permutations[&b];
 
             let a_from = permutations.insert(a, b_from).unwrap();
@@ -127,14 +148,22 @@ impl FastDance {
         permutations = permutations.into_iter().map(|(k, v)| (v, k)).collect();
 
         FastDance {
-            dancers: ('a' as u8..).map(|c| c as char).take(nb_dancers).collect(),
-            dance: dance.to_string().chars().map(|c| (c as u8 - 'a' as u8) as usize).collect(),
+            dancers: (b'a'..).map(|c| c as char).take(nb_dancers).collect(),
+            dance: dance
+                .to_string()
+                .chars()
+                .map(|c| (c as u8 - b'a') as usize)
+                .collect(),
             permutations,
         }
     }
 
     fn dance(&mut self) {
-        self.dancers = self.dance.iter().map(|&i| self.dancers[i]).map(|c| self.permutations[&c]).collect();
+        self.dancers = self.dance
+            .iter()
+            .map(|&i| self.dancers[i])
+            .map(|c| self.permutations[&c])
+            .collect();
     }
 
     fn to_string(&self) -> String {
@@ -163,14 +192,17 @@ pub fn part1(input: &str) -> String {
     let mut dance = Dance::new(16);
 
     for m in input.split(',').filter_map(|m| m.parse::<Move>().ok()) {
-        dance.make_move(&m);
+        dance.make_move(m);
     }
 
     dance.to_string()
 }
 
 pub fn part2(input: &str) -> String {
-    let moves = input.split(',').filter_map(|m| m.parse::<Move>().ok()).collect::<Vec<_>>();
+    let moves = input
+        .split(',')
+        .filter_map(|m| m.parse::<Move>().ok())
+        .collect::<Vec<_>>();
 
     let mut fast_dance = FastDance::new(16, &moves);
 
@@ -206,19 +238,22 @@ mod tests {
 
         assert_eq!(dance.to_string(), "abcde");
 
-        dance.make_move(&"s1".parse().unwrap());
+        dance.make_move("s1".parse().unwrap());
         assert_eq!(dance.to_string(), "eabcd");
 
-        dance.make_move(&"x3/4".parse().unwrap());
+        dance.make_move("x3/4".parse().unwrap());
         assert_eq!(dance.to_string(), "eabdc");
 
-        dance.make_move(&"pe/b".parse().unwrap());
+        dance.make_move("pe/b".parse().unwrap());
         assert_eq!(dance.to_string(), "baedc");
     }
 
     #[test]
     fn part2_sample() {
-        let dance: Vec<_> = ["s1", "x3/4", "pe/b"].iter().filter_map(|m| m.parse::<Move>().ok()).collect();
+        let dance: Vec<_> = ["s1", "x3/4", "pe/b"]
+            .iter()
+            .filter_map(|m| m.parse::<Move>().ok())
+            .collect();
 
         let mut fast_dance = FastDance::new(5, &dance);
 
