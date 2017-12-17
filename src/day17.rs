@@ -11,7 +11,7 @@ pub fn part1(input: usize) -> usize {
     ring_buffer[(position + 1) % ring_buffer.len()]
 }
 
-pub fn part2(input: usize) -> usize {
+pub fn part2(input: i32) -> i32 {
     let mut position = 0;
     let mut result = 0;
 
