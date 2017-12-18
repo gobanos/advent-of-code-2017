@@ -14,11 +14,11 @@ fn main() {
 
     let start_part2 = time::precise_time_s();
 
-//    println!("Part 2 : {}", part2(input));
-//
-//    let stop = time::precise_time_s();
+    println!("Part 2 : {}", part2(input));
+
+    let stop = time::precise_time_s();
 
     println!("\nREPORT:");
     println!("\t- Part 1: {:.9}s", start_part2 - start_part1);
-//    println!("\t- Part 2: {:.9}s", stop - start_part2);
+    println!("\t- Part 2: {:.9}s", stop - start_part2);
 }

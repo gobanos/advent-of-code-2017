@@ -6,7 +6,7 @@ use std::str;
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub enum Instruction {
-    Snd(char),
+    Snd(Value),
     Set(char, Value),
     Add(char, Value),
     Mul(char, Value),
@@ -40,9 +40,9 @@ named!(value<Value>, alt!(
 
 named!(snd<Instruction>, do_parse!(
     tag!("snd ")    >>
-    reg: register   >>
+    val: value      >>
 
-    (Instruction::Snd(reg))
+    (Instruction::Snd(val))
 ));
 
 named!(rcv<Instruction>, do_parse!(
