@@ -18,11 +18,11 @@ pub enum Instruction {
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub enum Value {
     Register(char),
-    Literal(i32),
+    Literal(i64),
 }
 
 named!(register<char>, verify!(anychar, |c| c >= 'a' && c <= 'z'));
-named!(literal<i32>, map_res!(
+named!(literal<i64>, map_res!(
     map_res!(
         recognize!(
             pair!(
