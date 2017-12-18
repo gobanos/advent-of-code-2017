@@ -9,6 +9,7 @@ day7_parser = { path = "day7_parser" }
 day8_parser = { path = "day8_parser" }
 day9_parser = { path = "day9_parser" }
 day12_parser = { path = "day12_parser" }
+day18_parser = { path = "day18_parser" }
 
 # EXTERNAL DEPS
 petgraph = "*"
