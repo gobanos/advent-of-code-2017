@@ -74,3 +74,35 @@ pub fn parse<T>(input: &str, mapper: fn((Vec3, Vec3, Vec3)) -> T) -> Vec<T> {
         .map(mapper)
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use nom::IResult::Done;
+
+    const EMPTY: &[u8] = b"";
+
+    #[test]
+    fn sample1() {
+        assert_eq!(line(b"p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>"), Done(
+            EMPTY,
+            (
+                Vec3 { x: 3, y: 0, z: 0 },
+                Vec3 { x: 2, y: 0, z: 0 },
+                Vec3 { x:-1, y: 0, z: 0 },
+            )
+        ));
+    }
+
+    #[test]
+    fn sample2() {
+        assert_eq!(line(b"p=<4,0,0>, v=<0,0,0>, a=<-2,0,0>"), Done(
+            EMPTY,
+            (
+                Vec3 { x: 4, y: 0, z: 0 },
+                Vec3 { x: 0, y: 0, z: 0 },
+                Vec3 { x:-2, y: 0, z: 0 },
+            )
+        ));
+    }
+}
