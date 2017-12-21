@@ -22,90 +22,60 @@ pub enum Value {
 }
 
 named!(register<char>, verify!(anychar, |c| c >= 'a' && c <= 'z'));
-named!(literal<i64>, map_res!(
+named!(
+    literal<i64>,
     map_res!(
-        recognize!(
-            pair!(
-                opt!(tag!("-")),
-                digit
-            )
-        ), str::from_utf8
-    ), str::parse
-));
+        map_res!(recognize!(pair!(opt!(tag!("-")), digit)), str::from_utf8),
+        str::parse
+    )
+);
 
-named!(value<Value>, alt!(
-    map!(register, Value::Register) |
-    map!(literal, Value::Literal)
-));
+named!(
+    value<Value>,
+    alt!(map!(register, Value::Register) | map!(literal, Value::Literal))
+);
 
-named!(snd<Instruction>, do_parse!(
-    tag!("snd ")    >>
-    val: value      >>
+named!(
+    snd<Instruction>,
+    do_parse!(tag!("snd ") >> val: value >> (Instruction::Snd(val)))
+);
 
-    (Instruction::Snd(val))
-));
+named!(
+    rcv<Instruction>,
+    do_parse!(tag!("rcv ") >> reg: register >> (Instruction::Rcv(reg)))
+);
 
-named!(rcv<Instruction>, do_parse!(
-    tag!("rcv ")    >>
-    reg: register   >>
+named!(
+    set<Instruction>,
+    do_parse!(tag!("set ") >> reg: register >> space >> val: value >> (Instruction::Set(reg, val)))
+);
 
-    (Instruction::Rcv(reg))
-));
+named!(
+    add<Instruction>,
+    do_parse!(tag!("add ") >> reg: register >> space >> val: value >> (Instruction::Add(reg, val)))
+);
 
-named!(set<Instruction>, do_parse!(
-    tag!("set ")    >>
-    reg: register   >>
-    space           >>
-    val: value      >>
+named!(
+    mul<Instruction>,
+    do_parse!(tag!("mul ") >> reg: register >> space >> val: value >> (Instruction::Mul(reg, val)))
+);
 
-    (Instruction::Set(reg, val))
-));
+named!(
+    modulo<Instruction>,
+    do_parse!(tag!("mod ") >> reg: register >> space >> val: value >> (Instruction::Mod(reg, val)))
+);
 
-named!(add<Instruction>, do_parse!(
-    tag!("add ")    >>
-    reg: register   >>
-    space           >>
-    val: value      >>
+named!(
+    jgz<Instruction>,
+    do_parse!(
+        tag!("jgz ") >> val: value >> space >> offset: value >> (Instruction::Jgz(val, offset))
+    )
+);
 
-    (Instruction::Add(reg, val))
-));
-
-named!(mul<Instruction>, do_parse!(
-    tag!("mul ")    >>
-    reg: register   >>
-    space           >>
-    val: value      >>
-
-    (Instruction::Mul(reg, val))
-));
-
-named!(modulo<Instruction>, do_parse!(
-    tag!("mod ")    >>
-    reg: register   >>
-    space           >>
-    val: value      >>
-
-    (Instruction::Mod(reg, val))
-));
-
-named!(jgz<Instruction>, do_parse!(
-    tag!("jgz ")    >>
-    val: value      >>
-    space           >>
-    offset: value   >>
-
-    (Instruction::Jgz(val, offset))
-));
-
-named!(line<Instruction>, alt!(
-    snd |
-    set |
-    add |
-    mul |
-    modulo |
-    rcv |
-    jgz
-));
+named!(
+    line<Instruction>,
+    alt!(snd | set | add | mul | modulo | rcv | jgz)
+);
 
 pub fn parse(input: &str) -> Vec<Instruction> {
     input
@@ -135,17 +105,20 @@ set a 1
 jgz a -2",
         );
 
-        assert_eq!(instructions, vec![
-            Set('a', Literal(1)),
-            Add('a', Literal(2)),
-            Mul('a', Register('a')),
-            Mod('a', Literal(5)),
-            Snd('a'),
-            Set('a', Literal(0)),
-            Rcv('a'),
-            Jgz(Register('a'), Literal(-1)),
-            Set('a', Literal(1)),
-            Jgz(Register('a'), Literal(-2)),
-        ])
+        assert_eq!(
+            instructions,
+            vec![
+                Set('a', Literal(1)),
+                Add('a', Literal(2)),
+                Mul('a', Register('a')),
+                Mod('a', Literal(5)),
+                Snd('a'),
+                Set('a', Literal(0)),
+                Rcv('a'),
+                Jgz(Register('a'), Literal(-1)),
+                Set('a', Literal(1)),
+                Jgz(Register('a'), Literal(-2)),
+            ]
+        )
     }
 }

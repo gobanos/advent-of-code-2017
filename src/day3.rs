@@ -61,10 +61,9 @@ fn find_ring(number: u32) -> Ring {
 
     let mut generator = SpiralGenerator::new();
 
-    generator.find(|r| r.contains(number)).expect(&format!(
-        "Failed to find ring for number {}",
-        number
-    ))
+    generator
+        .find(|r| r.contains(number))
+        .expect(&format!("Failed to find ring for number {}", number))
 }
 
 pub fn part1(input: u32) -> u32 {
@@ -82,7 +81,11 @@ pub fn part1(input: u32) -> u32 {
 }
 
 fn diff(a: u32, b: u32) -> u32 {
-    if a > b { a - b } else { b - a }
+    if a > b {
+        a - b
+    } else {
+        b - a
+    }
 }
 
 struct SumRing {

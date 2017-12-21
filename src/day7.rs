@@ -131,11 +131,10 @@ fn find_wrong_weight(graph: &Graph<Node, ()>, index: NodeIndex) -> Option<(i32, 
 
     match (weight_a, weight_b) {
         (_, None) => None,
-        (Some((wrong_weight, 1, wrong_node)), Some((correct_weight, _, _))) |
-        (Some((correct_weight, _, _)), Some((wrong_weight, 1, wrong_node))) => {
-            find_wrong_weight(graph, wrong_node).or_else(|| {
-                Some((wrong_weight as i32 - correct_weight as i32, wrong_node))
-            })
+        (Some((wrong_weight, 1, wrong_node)), Some((correct_weight, _, _)))
+        | (Some((correct_weight, _, _)), Some((wrong_weight, 1, wrong_node))) => {
+            find_wrong_weight(graph, wrong_node)
+                .or_else(|| Some((wrong_weight as i32 - correct_weight as i32, wrong_node)))
         }
         _ => unreachable!(),
     }

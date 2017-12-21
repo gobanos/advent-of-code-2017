@@ -114,14 +114,13 @@ impl FastDance {
     fn new(nb_dancers: usize, moves: &[Move]) -> FastDance {
         let mut dance = Dance::new(nb_dancers);
 
-        for m in moves.iter().filter_map(
-            |&m| if let Move::Partner(_, _) = m {
+        for m in moves.iter().filter_map(|&m| {
+            if let Move::Partner(_, _) = m {
                 None
             } else {
                 Some(m)
-            },
-        )
-        {
+            }
+        }) {
             dance.make_move(m);
         }
 
@@ -131,14 +130,13 @@ impl FastDance {
             .take(nb_dancers)
             .collect::<HashMap<_, _>>();
 
-        for (a, b) in moves.iter().filter_map(
-            |&m| if let Move::Partner(a, b) = m {
+        for (a, b) in moves.iter().filter_map(|&m| {
+            if let Move::Partner(a, b) = m {
                 Some((a, b))
             } else {
                 None
-            },
-        )
-        {
+            }
+        }) {
             let b_from = permutations[&b];
 
             let a_from = permutations.insert(a, b_from).unwrap();

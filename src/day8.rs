@@ -8,7 +8,9 @@ struct CPU<'a> {
 
 impl<'a> CPU<'a> {
     fn new() -> CPU<'a> {
-        CPU { registers: HashMap::new() }
+        CPU {
+            registers: HashMap::new(),
+        }
     }
 
     fn run(&mut self, instruction: &Instruction<'a>) -> Option<i32> {
@@ -79,9 +81,11 @@ pub fn part1(input: &str) -> i32 {
         cpu.run(instruction);
     }
 
-    cpu.registers.iter().map(|(_, &v)| v).max().expect(
-        "no maximum found",
-    )
+    cpu.registers
+        .iter()
+        .map(|(_, &v)| v)
+        .max()
+        .expect("no maximum found")
 }
 
 pub fn part2(input: &str) -> i32 {
@@ -89,7 +93,9 @@ pub fn part2(input: &str) -> i32 {
 
     let mut cpu = CPU::new();
 
-    input.iter().filter_map(|i| cpu.run(i)).max().expect(
-        "unable to find global maximum",
-    )
+    input
+        .iter()
+        .filter_map(|i| cpu.run(i))
+        .max()
+        .expect("unable to find global maximum")
 }

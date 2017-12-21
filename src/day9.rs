@@ -82,5 +82,4 @@ mod tests {
         assert_eq!(part1("{{<a!>},{<a!>},{<a!>},{<ab>}}"), 3);
     }
 
-
 }

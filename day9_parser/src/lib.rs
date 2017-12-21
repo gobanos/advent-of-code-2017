@@ -13,7 +13,8 @@ pub enum Content {
     Group(Vec<Content>),
 }
 
-named!(garbage<Content>,
+named!(
+    garbage<Content>,
     map!(
         delimited!(
             tag!("<"),
@@ -24,45 +25,24 @@ named!(garbage<Content>,
     )
 );
 
-named!(garbage_bit<u32>,
-    alt!(
-        value!(
-            0,
-            tuple!(
-                tag!("!"),
-                anychar
-            )
-        ) |
-        value!(
-            1,
-            tuple!(
-                not!(char!('>')),
-                anychar
-            )
-        )
-    )
+named!(
+    garbage_bit<u32>,
+    alt!(value!(0, tuple!(tag!("!"), anychar)) | value!(1, tuple!(not!(char!('>')), anychar)))
 );
 
-named!(group<Content>,
+named!(
+    group<Content>,
     map!(
         delimited!(
             tag!("{"),
-            separated_list_complete!(
-                tag!(","),
-                content
-            ),
+            separated_list_complete!(tag!(","), content),
             tag!("}")
         ),
         Group
     )
 );
 
-named!(content<Content>,
-    alt!(
-        group   |
-        garbage
-    )
-);
+named!(content<Content>, alt!(group | garbage));
 
 pub fn parse(input: &str) -> Result<Content, nom::ErrorKind> {
     content(input.as_bytes()).to_result()
@@ -125,7 +105,10 @@ mod tests {
     /// <{o"i!a,<{i<a>, which ends at the first >.
     /// <{o"i!a,<{i<a>, 10 characters.
     fn garbage_sample7() {
-        assert_eq!(content("<{o\"i!a,<{i<a>".as_bytes()), Done(EMPTY, Garbage(10)));
+        assert_eq!(
+            content("<{o\"i!a,<{i<a>".as_bytes()),
+            Done(EMPTY, Garbage(10))
+        );
     }
 
     #[test]
@@ -139,13 +122,7 @@ mod tests {
     fn group_sample2() {
         assert_eq!(
             content("{{{}}}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                    Group(vec![
-                        Group(vec![]),
-                    ]),
-                 ]),
-            )
+            Done(EMPTY, Group(vec![Group(vec![Group(vec![])])]),)
         );
     }
 
@@ -154,12 +131,7 @@ mod tests {
     fn group_sample3() {
         assert_eq!(
             content("{{},{}}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                     Group(vec![]),
-                     Group(vec![]),
-                 ])
-            )
+            Done(EMPTY, Group(vec![Group(vec![]), Group(vec![])]))
         );
     }
 
@@ -168,16 +140,15 @@ mod tests {
     fn group_sample4() {
         assert_eq!(
             content("{{{},{},{{}}}}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                     Group(vec![
-                         Group(vec![]),
-                         Group(vec![]),
-                         Group(vec![
-                             Group(vec![]),
-                         ]),
-                     ])
-                 ])
+            Done(
+                EMPTY,
+                Group(vec![
+                    Group(vec![
+                        Group(vec![]),
+                        Group(vec![]),
+                        Group(vec![Group(vec![])]),
+                    ]),
+                ])
             )
         );
     }
@@ -187,11 +158,7 @@ mod tests {
     fn group_sample5() {
         assert_eq!(
             content("{<{},{},{{}}>}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                     Garbage(10),
-                 ])
-            )
+            Done(EMPTY, Group(vec![Garbage(10)]))
         );
     }
 
@@ -200,13 +167,9 @@ mod tests {
     fn group_sample6() {
         assert_eq!(
             content("{<a>,<a>,<a>,<a>}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                     Garbage(1),
-                     Garbage(1),
-                     Garbage(1),
-                     Garbage(1),
-                 ])
+            Done(
+                EMPTY,
+                Group(vec![Garbage(1), Garbage(1), Garbage(1), Garbage(1)])
             )
         );
     }
@@ -216,13 +179,14 @@ mod tests {
     fn group_sample7() {
         assert_eq!(
             content("{{<a>},{<a>},{<a>},{<a>}}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                     Group(vec![Garbage(1)]),
-                     Group(vec![Garbage(1)]),
-                     Group(vec![Garbage(1)]),
-                     Group(vec![Garbage(1)]),
-                 ])
+            Done(
+                EMPTY,
+                Group(vec![
+                    Group(vec![Garbage(1)]),
+                    Group(vec![Garbage(1)]),
+                    Group(vec![Garbage(1)]),
+                    Group(vec![Garbage(1)]),
+                ])
             )
         );
     }
@@ -232,11 +196,7 @@ mod tests {
     fn group_sample8() {
         assert_eq!(
             content("{{<!>},{<!>},{<!>},{<a>}}".as_bytes()),
-            Done(EMPTY,
-                 Group(vec![
-                     Group(vec![Garbage(13)]),
-                 ])
-            )
+            Done(EMPTY, Group(vec![Group(vec![Garbage(13)])]))
         );
     }
 }

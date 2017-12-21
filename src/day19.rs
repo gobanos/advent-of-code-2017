@@ -45,24 +45,48 @@ impl Grid {
         if let Cell::Angle = cell {
             let direction = match (self.get_surroundings(), direction) {
                 ((Some(up), Some(right), _, _), Direction::Down)
-                    if not_empty(up) && not_empty(right) => Direction::Right,
+                    if not_empty(up) && not_empty(right) =>
+                {
+                    Direction::Right
+                }
                 ((Some(up), Some(right), _, _), Direction::Left)
-                    if not_empty(up) && not_empty(right) => Direction::Up,
+                    if not_empty(up) && not_empty(right) =>
+                {
+                    Direction::Up
+                }
 
                 ((Some(up), _, _, Some(left)), Direction::Down)
-                    if not_empty(up) && not_empty(left) => Direction::Left,
+                    if not_empty(up) && not_empty(left) =>
+                {
+                    Direction::Left
+                }
                 ((Some(up), _, _, Some(left)), Direction::Right)
-                    if not_empty(up) && not_empty(left) => Direction::Up,
+                    if not_empty(up) && not_empty(left) =>
+                {
+                    Direction::Up
+                }
 
                 ((_, Some(right), Some(down), _), Direction::Left)
-                    if not_empty(right) && not_empty(down) => Direction::Down,
+                    if not_empty(right) && not_empty(down) =>
+                {
+                    Direction::Down
+                }
                 ((_, Some(right), Some(down), _), Direction::Up)
-                    if not_empty(right) && not_empty(down) => Direction::Right,
+                    if not_empty(right) && not_empty(down) =>
+                {
+                    Direction::Right
+                }
 
                 ((_, _, Some(down), Some(left)), Direction::Right)
-                    if not_empty(down) && not_empty(left) => Direction::Down,
+                    if not_empty(down) && not_empty(left) =>
+                {
+                    Direction::Down
+                }
                 ((_, _, Some(down), Some(left)), Direction::Up)
-                    if not_empty(down) && not_empty(left) => Direction::Left,
+                    if not_empty(down) && not_empty(left) =>
+                {
+                    Direction::Left
+                }
 
                 _ => unreachable!("couldn't compute new direction"),
             };
@@ -78,21 +102,17 @@ impl Grid {
 
         (
             // UP
-            x.checked_sub(1).and_then(
-                |x| self.tubes.get(x).and_then(|r| r.get(y)),
-            ),
+            x.checked_sub(1)
+                .and_then(|x| self.tubes.get(x).and_then(|r| r.get(y))),
             // RIGHT
-            y.checked_add(1).and_then(
-                |y| self.tubes.get(x).and_then(|r| r.get(y)),
-            ),
+            y.checked_add(1)
+                .and_then(|y| self.tubes.get(x).and_then(|r| r.get(y))),
             // DOWN
-            x.checked_add(1).and_then(
-                |x| self.tubes.get(x).and_then(|r| r.get(y)),
-            ),
+            x.checked_add(1)
+                .and_then(|x| self.tubes.get(x).and_then(|r| r.get(y))),
             // LEFT
-            y.checked_sub(1).and_then(
-                |y| self.tubes.get(x).and_then(|r| r.get(y)),
-            ),
+            y.checked_sub(1)
+                .and_then(|y| self.tubes.get(x).and_then(|r| r.get(y))),
         )
     }
 

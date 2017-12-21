@@ -1,10 +1,12 @@
 fn line_min_max(line: &str) -> Option<(u32, u32)> {
     line.split_whitespace()
         .filter_map(|number| number.parse::<u32>().ok())
-        .fold(None, |min_max, number| if let Some((min, max)) = min_max {
-            Some((u32::min(min, number), u32::max(max, number)))
-        } else {
-            Some((number, number))
+        .fold(None, |min_max, number| {
+            if let Some((min, max)) = min_max {
+                Some((u32::min(min, number), u32::max(max, number)))
+            } else {
+                Some((number, number))
+            }
         })
 }
 

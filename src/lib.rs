@@ -1,8 +1,9 @@
+extern crate day12_parser;
+extern crate day18_parser;
+extern crate day20_parser;
 extern crate day7_parser;
 extern crate day8_parser;
 extern crate day9_parser;
-extern crate day12_parser;
-extern crate day18_parser;
 
 extern crate petgraph;
 extern crate rayon;
@@ -26,6 +27,7 @@ pub mod day16;
 pub mod day17;
 pub mod day18;
 pub mod day19;
+pub mod day20;
 
 pub mod knot_hasher;
 

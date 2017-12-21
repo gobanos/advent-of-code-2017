@@ -41,11 +41,10 @@ impl Disk {
             .iter()
             .enumerate()
             .filter_map(|(r, row)| {
-                row.iter().enumerate().find(|&(_, &cell)| cell).map(
-                    |(c, _)| {
-                        (r, c)
-                    },
-                )
+                row.iter()
+                    .enumerate()
+                    .find(|&(_, &cell)| cell)
+                    .map(|(c, _)| (r, c))
             })
             .next()
     }

@@ -46,8 +46,8 @@ impl Duet {
             }
             Instruction::Jgz(val, offset) => {
                 if self.get_val(val) > 0 {
-                    self.program_counter = (self.program_counter as i64 + self.get_val(offset)) as
-                        usize;
+                    self.program_counter =
+                        (self.program_counter as i64 + self.get_val(offset)) as usize;
                     advance_pc = false;
                 }
             }
