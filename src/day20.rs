@@ -88,11 +88,6 @@ mod tests {
 
     const SAMPLE_PART1: &str = "p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>\np=<4,0,0>, v=<0,0,0>, a=<-2,0,0>";
 
-    const SAMPLE_PART2: &str = "p=<-6,0,0>, v=<3,0,0>, a=<0,0,0>
-p=<-4,0,0>, v=<2,0,0>, a=<0,0,0>
-p=<-2,0,0>, v=<1,0,0>, a=<0,0,0>
-p=<3,0,0>, v=<-1,0,0>, a=<0,0,0>";
-
     #[test]
     fn part1_sample() {
         assert_eq!(part1(SAMPLE_PART1), 0);
