@@ -40,6 +40,8 @@ fn parse_input(input: &str) -> HashMap<PixelGrid, PixelGrid> {
     let input = parse(input, |line| line);
 
     for (pattern, replace) in input {
+        let replace = || replace.clone();
+
         let base = pattern;
 
         let flip_vert = mirror_vertical(&base);
@@ -52,17 +54,16 @@ fn parse_input(input: &str) -> HashMap<PixelGrid, PixelGrid> {
 
         let flip_hori_vert_diag = mirror_diagonal(&flip_hori_vert);
 
-        map.entry(base).or_insert_with(|| replace.clone());
-        map.entry(flip_vert).or_insert_with(|| replace.clone());
-        map.entry(flip_diag).or_insert_with(|| replace.clone());
-        map.entry(flip_hori).or_insert_with(|| replace.clone());
+        map.entry(base).or_insert_with(&replace);
+        map.entry(flip_vert).or_insert_with(&replace);
+        map.entry(flip_diag).or_insert_with(&replace);
+        map.entry(flip_hori).or_insert_with(&replace);
 
-        map.entry(flip_hori_diag).or_insert_with(|| replace.clone());
-        map.entry(flip_hori_vert).or_insert_with(|| replace.clone());
-        map.entry(flip_vert_diag).or_insert_with(|| replace.clone());
+        map.entry(flip_hori_diag).or_insert_with(&replace);
+        map.entry(flip_hori_vert).or_insert_with(&replace);
+        map.entry(flip_vert_diag).or_insert_with(&replace);
 
-        map.entry(flip_hori_vert_diag)
-            .or_insert_with(|| replace.clone());
+        map.entry(flip_hori_vert_diag).or_insert_with(&replace);
     }
 
     map
