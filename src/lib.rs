@@ -3,6 +3,7 @@ extern crate day18_parser;
 extern crate day20_parser;
 extern crate day21_parser;
 extern crate day23_parser;
+extern crate day25_parser;
 extern crate day7_parser;
 extern crate day8_parser;
 extern crate day9_parser;
