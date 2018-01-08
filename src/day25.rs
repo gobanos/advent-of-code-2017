@@ -98,7 +98,7 @@ struct Blueprint(HashMap<State, Instruction>);
 
 impl Blueprint {
     fn get(&self, state: State, value: Value) -> InstructionList {
-        self.0.get(&state).unwrap().get(value)
+        self.0[&state].get(value)
     }
 }
 
@@ -136,27 +136,26 @@ impl TuringMachine {
 }
 
 fn parse_input(input: &str) -> TuringMachine {
-    parse(input,
-          |(state, (cond_a, (w_a, d_a, s_a)), (cond_b, (w_b, d_b, s_b)))| {
-              let a = InstructionList::new(Value(w_a), Direction::from(d_a), State(s_a));
-              let b = InstructionList::new(Value(w_b), Direction::from(d_b), State(s_b));
+    parse(
+        input,
+        |(state, (cond_a, (w_a, d_a, s_a)), (cond_b, (w_b, d_b, s_b)))| {
+            let a = InstructionList::new(Value(w_a), Direction::from(d_a), State(s_a));
+            let b = InstructionList::new(Value(w_b), Direction::from(d_b), State(s_b));
 
-              assert_ne!(cond_a, cond_b);
+            assert_ne!(cond_a, cond_b);
 
-              let list = if cond_a {
-                  [b, a]
-              } else {
-                  [a, b]
-              };
+            let list = if cond_a { [b, a] } else { [a, b] };
 
-              (
-                  state,
-                  Instruction(list)
-              )
-          },
+            (state, Instruction(list))
+        },
         |(begin_state, nb_step), instructions| {
             let begin_state = State(begin_state);
-            let blueprint = Blueprint(instructions.into_iter().map(|(c, i)| (State(c), i)).collect());
+            let blueprint = Blueprint(
+                instructions
+                    .into_iter()
+                    .map(|(c, i)| (State(c), i))
+                    .collect(),
+            );
 
             TuringMachine {
                 tape: Tape::default(),
@@ -165,7 +164,7 @@ fn parse_input(input: &str) -> TuringMachine {
                 blueprint,
                 nb_step,
             }
-        }
+        },
     )
 }
 
